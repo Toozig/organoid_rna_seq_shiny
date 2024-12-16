@@ -1,0 +1,9 @@
+shiny_app/
+├── app.R              # Main application file
+├── global.R           # Global variables and data loading
+├── R/                 # Helper functions
+│   ├── data_utils.R   # Data processing functions
+│   ├── plot_utils.R   # Plotting utility functions
+│   └── ui_utils.R     # UI helper functions
+└── www/              # Static assets (CSS, images, etc)
+    └── styles.css    # Custom CSS styles 
