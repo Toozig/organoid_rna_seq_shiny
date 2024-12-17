@@ -15,7 +15,7 @@ create_mean_bar_plot <- function(gene_data, is_first_plot, log_scale = FALSE, fa
   # Calculate height based on number of genes and layout
   n_genes <- length(unique(gene_data$gene_name))
   n_rows <- ceiling(n_genes/facet_ncol)
-  plot_height <- max(500 * n_rows, 600)  # Increased from 300/400 to 500/600
+  plot_height <- max(800 * n_rows, 800)  # Changed from 500/600 to 800/800
   
   p <- ggplot(gene_data, aes(x = group, y = expression_mean, fill = group)) +
     geom_bar(stat = "identity", position = "dodge", width = 0.8) +
@@ -56,7 +56,7 @@ create_individual_bar_plot <- function(gene_data, is_first_plot, log_scale, face
   # Calculate height based on number of genes and layout
   n_genes <- length(unique(gene_data$gene_name))
   n_rows <- ceiling(n_genes/facet_ncol)
-  plot_height <- max(500 * n_rows, 600)  # Increased from 300/400 to 500/600
+  plot_height <- max(800 * n_rows, 800)  # Changed from 500/600 to 800/800
   
   p <- ggplot(gene_data, aes(x = group, y = expression_mean, fill = group)) +
     geom_bar(aes(group = sample),

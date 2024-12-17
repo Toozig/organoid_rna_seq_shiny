@@ -23,26 +23,31 @@ RUN R -e "install.packages(c(\
     'shinyjs' \
     ), repos='https://cran.rstudio.com/')"
 
+# Remove default index page and sample apps
+RUN rm -rf /srv/shiny-server/*
+
 # Create app directory
-RUN mkdir /srv/shiny-server/myapp
+RUN mkdir -p /srv/shiny-server/organoid-RNA-seq-app/R
+RUN mkdir -p /srv/shiny-server/organoid-RNA-seq-app/www
+RUN mkdir -p /srv/shiny-server/organoid-RNA-seq-app/data
 
 # Copy app files
-COPY app.R /srv/shiny-server/myapp/
-COPY global.R /srv/shiny-server/myapp/
-COPY R/ /srv/shiny-server/myapp/R/
-COPY www/ /srv/shiny-server/myapp/www/
+COPY app.R /srv/shiny-server/organoid-RNA-seq-app/
+COPY global.R /srv/shiny-server/organoid-RNA-seq-app/
+COPY R/ /srv/shiny-server/organoid-RNA-seq-app/R/
+COPY www/ /srv/shiny-server/organoid-RNA-seq-app/www/
 
 # Copy data file
-COPY data/rsem.merged.gene_tpm.tsv /srv/shiny-server/myapp/data/
-
-# Update global.R to use the correct data path
-RUN sed -i 's|/home/ls/toozig/gonen-lab/users/toozig/testis_organoids_project/organoids_RNA_seq/organoids_nf-core-rnaseq_v3.16.0_r0/star_rsem/rsem.merged.gene_tpm.tsv|/srv/shiny-server/myapp/data/rsem.merged.gene_tpm.tsv|g' /srv/shiny-server/myapp/global.R
+COPY data/tpm_df.tsv /srv/shiny-server/organoid-RNA-seq-app/data/
 
 # Make all app files readable
-RUN chmod -R 755 /srv/shiny-server/myapp
+RUN chmod -R 755 /srv/shiny-server/organoid-RNA-seq-app
+
+# Create a symbolic link to make the app the default
+RUN ln -s /srv/shiny-server/organoid-RNA-seq-app /srv/shiny-server/index
 
 # Expose port 3838 (default for Shiny)
 EXPOSE 3838
 
 # Run the Shiny app
-CMD ["/usr/bin/shiny-server"] 
+CMD ["/usr/bin/shiny-server"]
