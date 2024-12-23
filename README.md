@@ -41,6 +41,7 @@ shiny_app/
   - bslib
   - shinyjs
   - ggplot2
+  - shinymanager
 
 ## Installation
 

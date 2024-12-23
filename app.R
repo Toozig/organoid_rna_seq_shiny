@@ -48,8 +48,6 @@ ui <- fluidPage(
 
 # Server Definition
 server <- function(input, output, session) {
-  options(shiny.minified = TRUE)
-
   updateSelectizeInput(session, "gene_name",
     choices = ord_mtx$gene_name,
     selected = "Amh",
