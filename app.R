@@ -28,6 +28,17 @@ ui <- fluidPage(
         label = "Log scale",
         value = FALSE
       ),
+      checkboxInput("facet_by_source",
+        label = "Split by source (Organoid/Testis)",
+        value = TRUE
+      ),
+      conditionalPanel(
+        condition = "input.facet_by_source == true",
+        checkboxInput("share_y",
+        label = "Share Y-axis scale",
+        value = FALSE  # Changed default to FALSE
+      )
+    ),
       numericInput("facet_ncol",
         label = "Number of columns",
         value = 1,
@@ -58,16 +69,19 @@ server <- function(input, output, session) {
     req(input$gene_name)
 
     data <- sort_data(
-      group_means_melted, input$gene_name,
-      input$show_samples, input$log_scale
+      group_means_melted,
+      input$gene_name,
+      input$show_samples,
+      input$log_scale
     )
 
     create_scatter_plot(
-      data, 
-      is_first_plot = TRUE,
-      input$show_samples, 
+      data,
+      input$show_samples,
       input$log_scale,
-      input$facet_ncol
+      input$facet_ncol,
+      input$facet_by_source,
+      input$share_y
     )
   })
 }

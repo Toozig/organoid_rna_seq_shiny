@@ -6,6 +6,8 @@ process_melted_data <- function(group_means_melted) {
   group_means_melted$stage <- sub("_rep.*", "", group_means_melted$sample)
   group_means_melted$source <- sub(".*_", "", group_means_melted$stage)
   group_means_melted$stage <- sub("_.*", "", group_means_melted$stage)
+  group_means_melted$stage <- sub("_organoid", "", group_means_melted$stage)
+  group_means_melted$stage <- sub("_testis", "", group_means_melted$stage)
   group_means_melted$cell_type <- ifelse(grepl(TESTIS_PATTERN, group_means_melted$sample),
     CELL_TYPE_TESTIS, CELL_TYPE_ORGANOID
   )
@@ -35,7 +37,6 @@ clean_matrix <- function(tpm_matrix) {
   # No need for column name processing as they are already in the correct format
   return(tpm_matrix)
 }
-
 sort_data <- function(data, genes_names, show_samples = FALSE, log_scale = FALSE) {
   # First filter and process the data
   data <- data %>%
@@ -44,24 +45,19 @@ sort_data <- function(data, genes_names, show_samples = FALSE, log_scale = FALSE
       stage = sub("_rep.*", "", sample),
       source = sub(".*_", "", stage),
       stage = sub("_.*", "", stage),
-      group = paste0(stage, "_", source),
-      group = factor(group, levels = GROUP_ORDER),
+      group = stage,  # Changed from paste0(stage, "_", source)
       # Add small value before log to handle zeros
       expression = if(log_scale) log2(expression + 1) else expression
     )
   
   if (!show_samples) {
     data <- data %>%
-      group_by(!!sym(GENE_NAME_COL), group) %>%
+      group_by(!!sym(GENE_NAME_COL), group, source) %>%
       summarise(
         expression_mean = mean(expression, na.rm = TRUE),
         expression_sd = sd(expression, na.rm = TRUE),
         n = n(),
         .groups = 'drop'
-      ) %>%
-      mutate(
-        group = factor(group, levels = GROUP_ORDER),
-        expression_sd = ifelse(n > 1, expression_sd, NA)
       )
   } else {
     data <- data %>%
@@ -70,6 +66,14 @@ sort_data <- function(data, genes_names, show_samples = FALSE, log_scale = FALSE
         sample = factor(sample)
       )
   }
+  
+  # Factor the groups after summarizing
+  data <- data %>%
+    group_by(source) %>%
+    mutate(
+      group = factor(group, levels = intersect(GROUP_ORDER, unique(group)))
+    ) %>%
+    ungroup()
   
   return(data)
 }
