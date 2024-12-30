@@ -2,7 +2,6 @@ library(shiny)
 source("global.R")
 source("R/data_utils.R")
 source("R/plot_utils.R")
-source("R/ui_utils.R")
 
 # UI Definition
 ui <- fluidPage(
@@ -35,15 +34,9 @@ ui <- fluidPage(
       conditionalPanel(
         condition = "input.facet_by_source == true",
         checkboxInput("share_y",
-        label = "Share Y-axis scale",
-        value = FALSE  # Changed default to FALSE
-      )
-    ),
-      numericInput("facet_ncol",
-        label = "Number of columns",
-        value = 1,
-        min = 1,
-        max = 10
+          label = "Share Y-axis scale",
+          value = FALSE
+        )
       ),
       width = 2
     ),
@@ -51,7 +44,8 @@ ui <- fluidPage(
       width = 10,
       div(
         id = "gridScatter",
-        plotlyOutput("gridScatter")
+        style = "height: calc(100vh - 50px);",  # Dynamic height
+        plotlyOutput("gridScatter", height = "95%")
       )
     )
   )
@@ -61,7 +55,7 @@ ui <- fluidPage(
 server <- function(input, output, session) {
   updateSelectizeInput(session, "gene_name",
     choices = ord_mtx$gene_name,
-    selected = "Amh",
+    selected = c("Amh", "Wnt4"),
     server = TRUE
   )
 
@@ -79,7 +73,6 @@ server <- function(input, output, session) {
       data,
       input$show_samples,
       input$log_scale,
-      input$facet_ncol,
       input$facet_by_source,
       input$share_y
     )

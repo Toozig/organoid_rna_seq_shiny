@@ -1,0 +1,10 @@
+name: shiny_app
+title:
+username: x53v1n-gonen-lab
+account: x53v1n-gonen-lab
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 13649301
+bundleId:
+url: https://x53v1n-gonen-lab.shinyapps.io/shiny_app/
+version: 1
