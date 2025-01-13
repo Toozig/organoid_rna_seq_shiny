@@ -2,4 +2,8 @@
 .Rhistory
 .RData
 .Ruserdata
-credentials.rds 
+credentials.rds
+renv/library/
+renv/python/
+renv/staging/ 
+*.pyc

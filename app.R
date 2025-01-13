@@ -3,6 +3,12 @@ source("global.R")
 source("R/data_utils.R")
 source("R/plot_utils.R")
 
+# Initialize renv
+if (!requireNamespace("renv", quietly = TRUE)) {
+  install.packages("renv")
+}
+renv::restore()
+
 # UI Definition
 ui <- fluidPage(
   tags$head(
