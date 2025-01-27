@@ -2,8 +2,8 @@
 GENE_NAME_COL <- "gene_name"
 
 # Sample patterns
-ORGANOID_PATTERN <- "organoid"
-TESTIS_PATTERN <- "testis"
+ORGANOID_PATTERN <- "D"
+TESTIS_PATTERN <- "P"
 
 # File paths
 TPM_FILE_PATH <- "data/tpm_df.tsv"

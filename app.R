@@ -64,7 +64,16 @@ server <- function(input, output, session) {
     selected = c("Amh", "Wnt4"),
     server = TRUE
   )
-
+  observe({
+    req(input$gene_name)
+    data <- sort_data(
+      group_means_melted,
+      input$gene_name,
+      input$show_samples,
+      input$log_scale
+    )
+    print(names(data))
+  })
   output$gridScatter <- renderPlotly({
     req(input$gene_name)
 

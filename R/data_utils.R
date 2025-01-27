@@ -1,18 +1,14 @@
 # Data processing utility functions
 
 
-process_melted_data <- function(group_means_melted) {
+process_melted_data <- function(matrix) {
   # Process stage and source information
-  group_means_melted$stage <- sub("_rep.*", "", group_means_melted$sample)
-  group_means_melted$source <- sub(".*_", "", group_means_melted$stage)
-  group_means_melted$stage <- sub("_.*", "", group_means_melted$stage)
-  group_means_melted$stage <- sub("_organoid", "", group_means_melted$stage)
-  group_means_melted$stage <- sub("_testis", "", group_means_melted$stage)
-  group_means_melted$cell_type <- ifelse(grepl(TESTIS_PATTERN, group_means_melted$sample),
+  matrix$stage <- sub("_rep.*", "", matrix$sample)
+  matrix$cell_type <- ifelse(grepl(TESTIS_PATTERN, matrix$stage),
     CELL_TYPE_TESTIS, CELL_TYPE_ORGANOID
   )
 
-  return(group_means_melted)
+  return(matrix)
 }
 
 # Create melted data function
@@ -41,18 +37,16 @@ sort_data <- function(data, genes_names, show_samples = FALSE, log_scale = FALSE
   # First filter and process the data
   data <- data %>%
     filter(!!sym(GENE_NAME_COL) %in% genes_names) %>%
+    process_melted_data() %>%
     mutate(
-      stage = sub("_rep.*", "", sample),
-      source = sub(".*_", "", stage),
-      stage = sub("_.*", "", stage),
       group = stage,  # Changed from paste0(stage, "_", source)
       # Add small value before log to handle zeros
       expression = if(log_scale) log2(expression + 1) else expression
     )
-  
+  print(head(data))
   if (!show_samples) {
     data <- data %>%
-      group_by(!!sym(GENE_NAME_COL), group, source) %>%
+      group_by(!!sym(GENE_NAME_COL), group, cell_type) %>%
       summarise(
         expression_mean = mean(expression, na.rm = TRUE),
         expression_sd = sd(expression, na.rm = TRUE),
@@ -69,7 +63,7 @@ sort_data <- function(data, genes_names, show_samples = FALSE, log_scale = FALSE
   
   # Factor the groups after summarizing
   data <- data %>%
-    group_by(source) %>%
+    group_by(cell_type) %>%
     mutate(
       group = factor(group, levels = intersect(GROUP_ORDER, unique(group)))
     ) %>%

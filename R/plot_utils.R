@@ -62,7 +62,7 @@ facet_by_source <- function(p, facet_by_source = TRUE, share_y = FALSE) {
   if (facet_by_source) {
     scales_option <- if (share_y) "free_x" else "free"
     p <- p + facet_grid(
-      gene_name ~ source,
+      gene_name ~ cell_type,  # This is correct - matches your data
       scales = scales_option,
       space = "free_x",
       switch = "both"
@@ -72,13 +72,11 @@ facet_by_source <- function(p, facet_by_source = TRUE, share_y = FALSE) {
         axis.text.y = element_text(
           size = 10,
           margin = margin(r = 10)
-        ), # Add right margin
+        ),
         axis.title.y = element_text(size = 14, angle = 90),
         panel.spacing = unit(1, "lines"),
-        # Ensure axis lines and ticks are visible
         axis.line.y = element_line(color = "black"),
         axis.ticks.y = element_line(color = "black"),
-        # Ensure the axis text doesn't get clipped
         plot.margin = margin(t = 20, r = 20, b = 20, l = 50)
       )
   } else {
