@@ -12,8 +12,8 @@ TPM_FILE_PATH <- "data/tpm_df.tsv"
 COLS_TO_REMOVE <- NULL
 
 # Cell types
-CELL_TYPE_TESTIS <- "Testis"
-CELL_TYPE_ORGANOID <- "Organoid"
+CELL_TYPE_TESTIS <- "testis"
+CELL_TYPE_ORGANOID <- "organoid"
 
 # P-value thresholds
 ALPHA_LEVELS <- c(0.05, 0.01)

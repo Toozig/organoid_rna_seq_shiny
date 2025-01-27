@@ -33,14 +33,15 @@ clean_matrix <- function(tpm_matrix) {
   # No need for column name processing as they are already in the correct format
   return(tpm_matrix)
 }
-sort_data <- function(data, genes_names, show_samples = FALSE, log_scale = FALSE) {
-  # First filter and process the data
+sort_data <- function(data, genes_names, show_samples = FALSE, log_scale = FALSE, 
+                     source_filter = c(CELL_TYPE_TESTIS, CELL_TYPE_ORGANOID)) {
   data <- data %>%
     filter(!!sym(GENE_NAME_COL) %in% genes_names) %>%
     process_melted_data() %>%
+    # Add source filtering
+    filter(cell_type %in% source_filter) %>%
     mutate(
-      group = stage,  # Changed from paste0(stage, "_", source)
-      # Add small value before log to handle zeros
+      group = stage,
       expression = if(log_scale) log2(expression + 1) else expression
     )
   print(head(data))
