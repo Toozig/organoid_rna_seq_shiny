@@ -8,20 +8,6 @@ RUN apt-get update && apt-get install -y \
     libgit2-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install required R packages
-RUN R -e "install.packages(c(\
-    'shiny', \
-    'readr', \
-    'stringr', \
-    'tidyr', \
-    'dplyr', \
-    'reshape2', \
-    'coin', \
-    'plotly', \
-    'bslib', \
-    'shinyjs' \
-    ), repos='https://cran.rstudio.com/')"
-
 # Create app directory
 RUN mkdir -p /home/rstudio/app
 
@@ -29,4 +15,15 @@ RUN mkdir -p /home/rstudio/app
 WORKDIR /home/rstudio/app
 
 # Give write permissions to rstudio user
-RUN chown -R rstudio:rstudio /home/rstudio/app 
+RUN chown -R rstudio:rstudio /home/rstudio/app
+
+# Install development tools and required packages from CRAN
+RUN R -e 'install.packages(c(\
+    "httpgd", \
+    "languageserver", \
+    # Add your required packages here, for example:
+    "shiny", \
+    "tidyverse", \
+    "DT", \
+    "plotly" \
+    ), repos="https://cloud.r-project.org")' 
